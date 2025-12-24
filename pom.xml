@@ -10,6 +10,7 @@
         <module>common</module>
         <module>security</module>
         <module>system</module>
+        <module>blog</module>
     </modules>
     <groupId>io.github.motoryang</groupId>
     <artifactId>cloud</artifactId>
@@ -87,6 +88,13 @@
             </dependency>
 
             <!-- MyBatis Plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-bom</artifactId>
+                <version>${mybatis-plus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>

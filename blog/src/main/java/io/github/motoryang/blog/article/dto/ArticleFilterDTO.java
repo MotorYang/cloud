@@ -1,0 +1,13 @@
+package io.github.motoryang.blog.article.dto;
+
+import lombok.Data;
+
+@Data
+public class ArticleFilterDTO {
+
+    private String title;
+    private String category;
+
+    private String sortOrder; // desc or asc
+
+}

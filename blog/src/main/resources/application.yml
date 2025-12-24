@@ -1,0 +1,25 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: blog
+  profiles:
+    active: @activatedProperties@
+  config:
+    import:
+      - nacos:${spring.application.name}.yaml
+      - nacos:shared-config.yaml
+  cloud:
+    nacos:
+      server-addr: 192.168.1.97:8848
+      username: cloud_developer
+      password: 745700Yxy@
+      # 配置中心
+      config:
+        file-extension: yaml
+        namespace: cloud
+      # 服务发现
+      discovery:
+        server-addr: 192.168.1.97:8848
+        namespace: cloud

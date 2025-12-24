@@ -17,7 +17,7 @@ public class CaptchaVO implements Serializable {
     /**
      * 验证码UUID
      */
-    private String uuid;
+    private String captchaId;
 
     /**
      * 验证码图片（Base64）

@@ -26,10 +26,10 @@ public class LoginRequest implements Serializable {
     /**
      * 验证码
      */
-    private String code;
+    private String captcha;
 
     /**
      * 验证码UUID
      */
-    private String uuid;
+    private String captchaId;
 }

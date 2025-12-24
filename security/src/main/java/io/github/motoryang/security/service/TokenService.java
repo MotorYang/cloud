@@ -67,7 +67,7 @@ public class TokenService {
      */
     public LoginUser getLoginUser(String username) {
         String key = getUserKey(username);
-        return redisCache.getCacheObject(key);
+        return redisCache.getCacheObject(key, LoginUser.class);
     }
 
     /**
@@ -75,7 +75,7 @@ public class TokenService {
      */
     public boolean verifyAccessToken(String username, String token) {
         String key = getAccessTokenKey(username);
-        String cachedToken = redisCache.getCacheObject(key);
+        String cachedToken = redisCache.getCacheObject(key, String.class);
         return token.equals(cachedToken);
     }
 
@@ -84,7 +84,7 @@ public class TokenService {
      */
     public boolean verifyRefreshToken(String username, String token) {
         String key = getRefreshTokenKey(username);
-        String cachedToken = redisCache.getCacheObject(key);
+        String cachedToken = redisCache.getCacheObject(key, String.class);
         return token.equals(cachedToken);
     }
 

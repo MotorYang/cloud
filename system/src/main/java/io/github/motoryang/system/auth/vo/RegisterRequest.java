@@ -56,12 +56,12 @@ public class RegisterRequest {
      * 验证码
      */
     @NotBlank(message = "验证码不能为空")
-    private String code;
+    private String captcha;
 
     /**
      * 验证码UUID
      */
-    @NotBlank(message = "验证码UUID不能为空")
-    private String uuid;
+    @NotBlank(message = "验证码ID不能为空")
+    private String captchaId;
 
 }

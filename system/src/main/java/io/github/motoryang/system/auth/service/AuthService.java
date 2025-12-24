@@ -67,7 +67,7 @@ public class AuthService {
         log.info("生成验证码，UUID: {}, Code: {}", uuid, code);
 
         CaptchaVO vo = new CaptchaVO();
-        vo.setUuid(uuid);
+        vo.setCaptchaId(uuid);
         vo.setImage(image);
 
         return vo;
@@ -76,20 +76,20 @@ public class AuthService {
     /**
      * 验证验证码
      */
-    private void validateCaptcha(String uuid, String code) {
-        if (!StringUtils.hasText(uuid) || !StringUtils.hasText(code)) {
+    private void validateCaptcha(String captchaId, String captcha) {
+        if (!StringUtils.hasText(captchaId) || !StringUtils.hasText(captcha)) {
             throw new ServiceException("验证码不能为空");
         }
 
-        String key = Constants.CAPTCHA_CODE_KEY + uuid;
-        String savedCode = redisCache.getCacheObject(key);
+        String key = Constants.CAPTCHA_CODE_KEY + captchaId;
+        String savedCode = redisCache.getCacheObject(key, String.class);
 
         if (!StringUtils.hasText(savedCode)) {
             throw new ServiceException("验证码已过期，请重新获取");
         }
 
         // 不区分大小写比较
-        if (!code.equalsIgnoreCase(savedCode)) {
+        if (!captcha.equalsIgnoreCase(savedCode)) {
             throw new ServiceException("验证码错误");
         }
 
@@ -102,7 +102,7 @@ public class AuthService {
      */
     public LoginResponse login(LoginRequest request) {
         // 1. 验证验证码
-        validateCaptcha(request.getUuid(), request.getCode());
+        validateCaptcha(request.getCaptchaId(), request.getCaptcha());
 
         // 2. 查询用户
         User user = userMapper.selectUserByUsername(request.getUsername());
@@ -171,7 +171,7 @@ public class AuthService {
     @Transactional(rollbackFor = Exception.class)
     public void register(RegisterRequest request) {
         // 1. 验证验证码
-        validateCaptcha(request.getUuid(), request.getCode());
+        validateCaptcha(request.getCaptchaId(), request.getCaptcha());
 
         // 2. 验证两次密码是否一致
         if (!request.getPassword().equals(request.getConfirmPassword())) {
