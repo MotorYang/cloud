@@ -1,0 +1,57 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: system
+  profiles:
+    active: dev
+  config:
+    import:
+      - nacos:${spring.application.name}.yaml
+      - nacos:shared-config.yaml
+  cloud:
+    nacos:
+      server-addr: 192.168.1.97:8848
+      username: cloud_developer
+      password: 745700Yxy@
+      # 配置中心
+      config:
+        file-extension: yaml
+        namespace: cloud
+      # 服务发现
+      discovery:
+        server-addr: 192.168.1.97:8848
+        namespace: cloud
+
+  # 数据源配置
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.1.97:15432/cloud?options=-c%20TimeZone=Asia/Shanghai
+    username: cloud
+    password: CloudDev
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      validation-query: SELECT 1
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+  jackson:
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+
+# 日志配置
+logging:
+  level:
+    io.github.motoryang: debug
+    com.baomidou.mybatisplus: debug
+    org.springframework.beans.factory.support: DEBUG
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n'
