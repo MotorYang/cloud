@@ -2,95 +2,10 @@ server:
   port: 8888
 
 spring:
-  profiles:
-    active: dev
-
+  application:
+    name: gateway
   main:
     # 允许 bean 定义覆盖
     allow-bean-definition-overriding: true
     # Gateway 基于 WebFlux
     web-application-type: reactive
-
-  cloud:
-    gateway:
-      # 服务发现路由
-      discovery:
-        locator:
-          enabled: true  # 启用服务发现
-          lower-case-service-id: true  # 服务名小写
-
-      # 路由配置
-      routes:
-        # System 服务路由
-        - id: system
-          uri: lb://system
-          predicates:
-            - Path=/system/**
-          filters:
-            - StripPrefix=1
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 10  # 令牌桶每秒填充速率
-                redis-rate-limiter.burstCapacity: 20   # 令牌桶总容量
-
-        # User 服务路由
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/user/**
-          filters:
-            - StripPrefix=1
-
-        # Auth 服务路由（如果有独立的认证服务）
-        - id: auth-service
-          uri: lb://auth-service
-          predicates:
-            - Path=/auth/**
-          filters:
-            - StripPrefix=1
-
-      # 全局过滤器配置
-      default-filters:
-        - name: Retry
-          args:
-            retries: 3
-            statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE
-            methods: GET,POST
-            backoff:
-              firstBackoff: 100ms
-              maxBackoff: 500ms
-              factor: 2
-              basedOnPreviousValue: false
-
-    # Sentinel 配置
-    sentinel:
-      transport:
-        dashboard: localhost:8080  # Sentinel 控制台地址
-        port: 8719
-      # 取消控制台懒加载
-      eager: true
-      # Gateway 限流配置
-      scg:
-        fallback:
-          mode: response
-          response-body: '{"code":429,"msg":"请求过于频繁，请稍后再试"}'
-
-# 日志配置
-logging:
-  level:
-    io.github.yourname: debug
-    org.springframework.cloud.gateway: info
-    org.springframework.http.server.reactive: info
-    org.springframework.web.reactive: info
-  pattern:
-    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n'
-
-# 管理端点
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always

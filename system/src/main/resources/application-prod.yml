@@ -1,11 +1,4 @@
-server:
-  port: 8081
-
 spring:
-  application:
-    name: system
-  profiles:
-    active: @activatedProperties@
   config:
     import:
       - nacos:${spring.application.name}.yaml
@@ -18,8 +11,8 @@ spring:
       # 配置中心
       config:
         file-extension: yaml
-        namespace: cloud
+        namespace: cloud-prod
       # 服务发现
       discovery:
         server-addr: 192.168.1.97:8848
-        namespace: cloud
+        namespace: cloud-prod

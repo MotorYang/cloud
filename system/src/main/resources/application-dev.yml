@@ -1,11 +1,4 @@
-server:
-  port: 8081
-
 spring:
-  application:
-    name: system
-  profiles:
-    active: @activatedProperties@
   config:
     import:
       - nacos:${spring.application.name}.yaml
