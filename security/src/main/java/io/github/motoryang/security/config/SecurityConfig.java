@@ -1,9 +1,9 @@
 package io.github.motoryang.security.config;
 
 import io.github.motoryang.security.filter.JwtAuthenticationTokenFilter;
-import io.github.motoryang.security.handler.AuthenticationEntryPointImpl;
 import io.github.motoryang.security.handler.AccessDeniedHandlerImpl;
-import io.github.motoryang.security.handler.LogoutSuccessHandlerImpl;
+import io.github.motoryang.security.handler.AuthenticationEntryPointImpl;
+import io.github.motoryang.security.properties.WhitelistProperties;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +34,7 @@ public class SecurityConfig {
     private AccessDeniedHandlerImpl accessDeniedHandler;
 
     @Resource
-    private LogoutSuccessHandlerImpl logoutSuccessHandler;
+    private WhitelistProperties whitelistProperties;
 
     /**
      * 认证管理器
@@ -63,12 +65,16 @@ public class SecurityConfig {
                 // 请求授权配置
                 .authorizeHttpRequests(authorize -> authorize
                         // 公开接口（根据实际情况调整）
-                        .requestMatchers("/auth/**", "/captcha/**", "/error").permitAll()
+                        .requestMatchers(whitelistArray(whitelistProperties.getWhitelist())).permitAll()
                         // 其他请求需要认证
                         .anyRequest().authenticated())
                 // 添加 JWT 过滤器
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    private String[] whitelistArray(List<String> whitelist) {
+        return whitelist.toArray(new String[0]);
     }
 }

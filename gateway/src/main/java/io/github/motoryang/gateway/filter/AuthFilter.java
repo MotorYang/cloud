@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import io.github.motoryang.common.constant.Constants;
 import io.github.motoryang.common.domain.RestResult;
 import io.github.motoryang.common.utils.JwtUtils;
+import io.github.motoryang.gateway.properties.WhitelistProperties;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -20,8 +21,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 认证过滤器
@@ -33,21 +32,10 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Resource
     private JwtUtils jwtUtils;
 
-    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    @Resource
+    private WhitelistProperties whitelistProperties;
 
-    /**
-     * 白名单路径（不需要认证）
-     */
-    private static final List<String> WHITE_LIST = Arrays.asList(
-            "/system/auth/login",
-            "/system/auth/register",
-            "/system/auth/captcha",
-            "/auth/refresh",
-            "/*/v2/api-docs",     // Swagger
-            "/*/v3/api-docs",
-            "/*/swagger-resources/**",
-            "/actuator/**"         // 健康检查
-    );
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -99,7 +87,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * 判断是否是白名单路径
      */
     private boolean isWhitePath(String path) {
-        return WHITE_LIST.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
+        return whitelistProperties.getWhitelist().stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
     }
 
     /**
