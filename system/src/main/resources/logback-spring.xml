@@ -15,12 +15,12 @@
     <!-- 文件输出 - 按时间和大小滚动 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 当前日志文件存放在 current 目录 -->
-        <file>${LOG_HOME}/${APP_NAME}.log</file>
+        <file>${LOG_HOME}/${APP_NAME}/current/${APP_NAME}.log</file>
 
         <!-- 滚动策略 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 归档日志文件存放在 archive 目录 -->
-            <fileNamePattern>${LOG_HOME}/${APP_NAME}/${APP_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}/archive/${APP_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- 单个文件最大大小 -->
             <maxFileSize>100MB</maxFileSize>
             <!-- 保留30天的日志 -->
@@ -37,27 +37,54 @@
 
     <!-- 异步输出日志 -->
     <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
-        <!-- 不丢失日志。默认如果队列的80%已满，则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <!-- 不丢失日志 -->
         <discardingThreshold>0</discardingThreshold>
-        <!-- 更改默认的队列的深度，该值会影响性能。默认值为256 -->
+        <!-- 队列深度 -->
         <queueSize>512</queueSize>
-        <!-- 添加附加的appender，最多只能添加一个 -->
         <appender-ref ref="FILE"/>
     </appender>
 
-    <!-- Spring框架日志 -->
-    <logger name="org.springframework" level="INFO"/>
-    <logger name="org.springframework.cloud.gateway" level="DEBUG"/>
+    <!-- 开发环境配置 -->
+    <springProfile name="dev">
+        <!-- Spring框架日志 -->
+        <logger name="org.springframework" level="INFO"/>
 
-    <!-- Nacos日志 -->
-    <logger name="com.alibaba.nacos" level="INFO"/>
+        <!-- Nacos日志 -->
+        <logger name="com.alibaba.nacos" level="INFO"/>
 
-    <!-- 项目日志 -->
-    <logger name="io.github.motoryang" level="DEBUG"/>
+        <!-- 项目日志 -->
+        <logger name="io.github.motoryang" level="DEBUG"/>
 
-    <!-- 根日志级别 -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ASYNC_FILE"/>
-    </root>
+        <!-- MyBatis Plus -->
+        <logger name="com.baomidou.mybatisplus" level="DEBUG"/>
+        <logger name="io.github.motoryang.system.mapper" level="DEBUG"/>
+
+        <!-- 根日志级别 -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- 生产环境配置 -->
+    <springProfile name="prod">
+        <!-- Spring框架日志 -->
+        <logger name="org.springframework" level="WARN"/>
+
+        <!-- Nacos日志 -->
+        <logger name="com.alibaba.nacos" level="WARN"/>
+
+        <!-- 项目日志 -->
+        <logger name="io.github.motoryang" level="INFO"/>
+
+        <!-- MyBatis Plus - 生产环境不输出SQL -->
+        <logger name="com.baomidou.mybatisplus" level="WARN"/>
+        <logger name="io.github.motoryang.system.mapper" level="WARN"/>
+
+        <!-- 根日志级别 -->
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+        </root>
+    </springProfile>
 </configuration>

@@ -40,12 +40,3 @@ google:
   ai:
     api-key: AIzaSyCUHFwrJmFS0jnN7FUsHft7K39FjMkI34U
     model: gemini-2.5-flash
-
-# 日志配置
-logging:
-  level:
-    io.github.motoryang: debug
-    com.baomidou.mybatisplus: debug
-    org.springframework.beans.factory.support: DEBUG
-  pattern:
-    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n'
