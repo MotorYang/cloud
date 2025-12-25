@@ -5,7 +5,7 @@ spring:
       - nacos:shared-config.yaml
   cloud:
     nacos:
-      server-addr: 192.168.1.97:8848
+      server-addr: 127.0.0.1:8848
       username: cloud_developer
       password: 745700Yxy@
       # 配置中心
@@ -14,5 +14,5 @@ spring:
         namespace: cloud-prod
       # 服务发现
       discovery:
-        server-addr: 192.168.1.97:8848
+        server-addr: 127.0.0.1:8848
         namespace: cloud-prod

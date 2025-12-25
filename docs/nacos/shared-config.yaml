@@ -1,0 +1,24 @@
+# JWT 配置（所有服务共享）
+jwt:
+  secret: sXr9L+qM8f+7lK2jB0iM8Q4v1N2t5uW8yqHj4tYVb1Q=
+  access-token-expiration: 3600  # 60分钟（秒）
+  refresh-token-expiration: 604800  # 7天（秒）
+
+# 内部调用密钥
+inner:
+  secret: pL8YxZrC3sA6Q0K7M2H4W5T9VJENdFBRUeGmX
+
+# Redis 配置（所有服务共享）
+spring:
+  data:
+    redis:
+      host: 192.168.1.97
+      port: 6379
+      database: 0
+      timeout: 5000
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms

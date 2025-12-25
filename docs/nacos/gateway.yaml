@@ -1,0 +1,73 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        - id: system
+          uri: lb://system
+          predicates:
+            - Path=/system/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+
+        - id: blog
+          uri: lb://blog
+          predicates:
+            - Path=/blog/**
+          filters:
+            - StripPrefix=1
+
+      default-filters:
+        - name: Retry
+          args:
+            retries: 3
+            statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE
+            methods: GET,POST
+            backoff:
+              firstBackoff: 100ms
+              maxBackoff: 500ms
+              factor: 2
+              basedOnPreviousValue: false
+
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+        port: 8719
+      eager: true
+      scg:
+        fallback:
+          mode: response
+          response-body: '{"code":429,"msg":"请求过于频繁，请稍后再试"}'
+
+gateway:
+  security:
+    whitelist:
+      - /system/auth/login
+      - /system/auth/register
+      - /system/auth/captcha
+      - /system/auth/refresh
+      - /blog/articles/query
+      - /blog/articles/all
+      - /blog/articles/get/*
+      - /blog/articles/views/*
+      - /blog/articles/category/*
+      - /blog/articles/author/*
+      - /blog/articles/search
+      - /blog/ai/generate-summary
+      - /blog/ai/chat
+      - /blog/ai/health-check
+      - /blog/ai/health
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
