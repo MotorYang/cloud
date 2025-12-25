@@ -259,6 +259,13 @@ public class AuthService {
     }
 
     /**
+     * 刷新Token
+     */
+    public Map<String, String> refreshToken(String refreshToken) {
+        return tokenService.refreshAccessToken(refreshToken);
+    }
+
+    /**
      * 获取当前登录用户信息
      */
     public UserInfoVO getUserInfo() {

@@ -89,9 +89,9 @@ public class TokenService {
     }
 
     /**
-     * 刷新访问令牌
+     * 刷新访问令牌（支持滚动刷新）
      */
-    public String refreshAccessToken(String refreshToken) {
+    public Map<String, String> refreshAccessToken(String refreshToken) {
         // 验证刷新令牌格式
         if (!jwtUtils.validateToken(refreshToken)) {
             throw new RuntimeException("刷新令牌无效");
@@ -106,26 +106,40 @@ public class TokenService {
             throw new RuntimeException("刷新令牌已失效");
         }
 
-        // 生成新的访问令牌
+        // 生成新的 claims
         Map<String, Object> claims = new HashMap<>();
         claims.put("sub", username);
         claims.put("userId", userId);
         claims.put("created", System.currentTimeMillis());
 
+        // 生成新的访问令牌
         String newAccessToken = jwtUtils.createAccessToken(claims);
+
+        // 生成新的刷新令牌（滚动刷新）
+        String newRefreshToken = jwtUtils.createRefreshToken(claims);
 
         // 更新 Redis 中的访问令牌
         String accessKey = getAccessTokenKey(username);
         redisCache.setCacheObject(accessKey, newAccessToken,
                 Constants.ACCESS_TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
 
+        // 更新 Redis 中的刷新令牌
+        String refreshKey = getRefreshTokenKey(username);
+        redisCache.setCacheObject(refreshKey, newRefreshToken,
+                Constants.REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.DAYS);
+
         // 刷新用户信息有效期
         String userKey = getUserKey(username);
         redisCache.expire(userKey, Constants.ACCESS_TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
 
-        log.info("用户 {} 刷新访问令牌成功", username);
+        log.info("用户 {} 刷新令牌成功（滚动刷新）", username);
 
-        return newAccessToken;
+        // 返回新的访问令牌和刷新令牌
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", newAccessToken);
+        tokens.put("refreshToken", newRefreshToken);
+
+        return tokens;
     }
 
     /**
