@@ -117,7 +117,7 @@ start_service() {
 
     # 启动服务
     nohup java -jar "$jar_file" \
-        --spring.profiles.active=dev \
+        --spring.profiles.active=prod \
         > /dev/null 2>&1 &
 
     local pid=$!
