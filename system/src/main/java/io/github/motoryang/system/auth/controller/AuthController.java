@@ -49,7 +49,7 @@ public class AuthController {
     /**
      * 退出登录
      */
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public RestResult<?> logout() {
         authService.logout();
         return RestResult.success("退出成功");
