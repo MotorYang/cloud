@@ -40,7 +40,7 @@ public class DataInitializer implements CommandLineRunner {
 
       if (settingCount == 0) {
           log.info("===初始化ApiKey===");
-          String apiKey = "AIzaSyDQ6Z4eZxwXVvv5T-fq5gIKtwL4jzAgFXc";
+          String apiKey = "xxxxxxxxxxxx";
           String enApiKey = cryptoUtils.encrypt(apiKey);
           Settings settings = Settings.builder()
                   .key("gemini_api_key")
