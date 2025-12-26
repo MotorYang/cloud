@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName(value = "articles", autoResultMap = true)
+@TableName(value = "blog_articles", autoResultMap = true)
 public class Article {
 
     /**

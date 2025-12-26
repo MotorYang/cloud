@@ -99,7 +99,7 @@ CREATE INDEX idx_blog_article_categories_sort ON blog_article_categories(sort_or
 CREATE TRIGGER update_blog_article_categories_updated_at BEFORE UPDATE ON blog_article_categories
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TABLE blog_music_tracks (
+CREATE TABLE blog_music_track (
                                    id VARCHAR(36) PRIMARY KEY NOT NULL ,
                                    name VARCHAR(200) NOT NULL,
                                    author VARCHAR(100),
@@ -113,20 +113,20 @@ CREATE TABLE blog_music_tracks (
 );
 
 -- 添加注释
-COMMENT ON TABLE blog_music_tracks IS '音乐曲目表';
-COMMENT ON COLUMN blog_music_tracks.id IS '主键ID(UUID)';
-COMMENT ON COLUMN blog_music_tracks.name IS '歌曲名称';
-COMMENT ON COLUMN blog_music_tracks.author IS '艺术家';
-COMMENT ON COLUMN blog_music_tracks.url IS '音频URL';
-COMMENT ON COLUMN blog_music_tracks.duration IS '时长(秒)';
-COMMENT ON COLUMN blog_music_tracks.sort_order IS '排序号';
-COMMENT ON COLUMN blog_music_tracks.play_count IS '播放次数';
-COMMENT ON COLUMN blog_music_tracks.is_active IS '是否启用';
+COMMENT ON TABLE blog_music_track IS '音乐曲目表';
+COMMENT ON COLUMN blog_music_track.id IS '主键ID(UUID)';
+COMMENT ON COLUMN blog_music_track.name IS '歌曲名称';
+COMMENT ON COLUMN blog_music_track.author IS '艺术家';
+COMMENT ON COLUMN blog_music_track.url IS '音频URL';
+COMMENT ON COLUMN blog_music_track.duration IS '时长(秒)';
+COMMENT ON COLUMN blog_music_track.sort_order IS '排序号';
+COMMENT ON COLUMN blog_music_track.play_count IS '播放次数';
+COMMENT ON COLUMN blog_music_track.is_active IS '是否启用';
 
 -- 创建索引
-CREATE INDEX idx_blog_music_tracks_active ON blog_music_tracks(is_active);
-CREATE INDEX idx_blog_music_tracks_sort ON blog_music_tracks(sort_order);
+CREATE INDEX idx_blog_music_track_active ON blog_music_track(is_active);
+CREATE INDEX idx_blog_music_track_sort ON blog_music_track(sort_order);
 
 -- 创建更新时间触发器
-CREATE TRIGGER update_blog_music_tracks_updated_at BEFORE UPDATE ON blog_music_tracks
+CREATE TRIGGER update_blog_music_track_updated_at BEFORE UPDATE ON blog_music_track
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

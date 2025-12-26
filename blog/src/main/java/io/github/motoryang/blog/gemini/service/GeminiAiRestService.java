@@ -3,6 +3,7 @@ package io.github.motoryang.blog.gemini.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.motoryang.blog.settings.service.SettingsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +25,8 @@ public class GeminiAiRestService {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
-
-    @Value("${google.ai.api-key}")
-    private String apiKey;
+    @Autowired
+    private SettingsService settingsService;
 
     @Value("${google.ai.model:gemini-2.0-flash-exp}")
     private String model;
@@ -446,6 +446,7 @@ public class GeminiAiRestService {
      */
     private String generateContent(String prompt) {
         try {
+            String apiKey = settingsService.getApiKey();
             String url = String.format(API_ENDPOINT, model, apiKey);
 
             Map<String, Object> requestBody = new HashMap<>();
@@ -478,6 +479,7 @@ public class GeminiAiRestService {
      */
     private String generateContentWithHistory(List<Map<String, Object>> history) {
         try {
+            String apiKey = settingsService.getApiKey();
             String url = String.format(API_ENDPOINT, model, apiKey);
 
             // 转换历史记录格式

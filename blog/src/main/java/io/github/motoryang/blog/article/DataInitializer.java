@@ -15,7 +15,7 @@ import java.util.List;
  * 数据库初始化类
  * 在应用启动时插入初始文章数据
  */
-@Component
+@Component("articleDataInitializer")
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 

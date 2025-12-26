@@ -22,13 +22,13 @@ public class DashboardService {
         DashboardDTO stats = new DashboardDTO();
 
         // 总文章数
-        stats.setTotalArticles(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM articles", Long.class));
+        stats.setTotalArticles(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM blog_articles", Long.class));
 
         // 总浏览量
-        stats.setTotalViews(jdbcTemplate.queryForObject("SELECT COALESCE(SUM(views), 0) FROM articles", Long.class));
+        stats.setTotalViews(jdbcTemplate.queryForObject("SELECT COALESCE(SUM(views), 0) FROM blog_articles", Long.class));
 
         // 分类统计
-        String categorySql = "SELECT category, COUNT(*) as count FROM articles GROUP BY category";
+        String categorySql = "SELECT category, COUNT(*) as count FROM blog_articles GROUP BY category";
         Map<String, Long> categoryMap = jdbcTemplate.query(categorySql, rs -> {
             Map<String, Long> map = new HashMap<>();
             while (rs.next()) {
@@ -41,7 +41,7 @@ public class DashboardService {
         // 月度增长
         String monthlySql = "SELECT TO_CHAR(DATE_TRUNC('month', date), 'YYYY-MM') as date, " +
                 "COUNT(*)::integer as count " +
-                "FROM articles " +
+                "FROM blog_articles " +
                 "WHERE date >= CURRENT_DATE - INTERVAL '12 months' " +
                 "GROUP BY DATE_TRUNC('month', date) " +
                 "ORDER BY date DESC";
@@ -56,7 +56,7 @@ public class DashboardService {
         stats.setMonthlyGrowth(monthlyGrowth);
 
         // 阅读量前十
-        String hotArticlesSql = "SELECT id, title, category, views FROM articles ORDER BY views DESC LIMIT 10";
+        String hotArticlesSql = "SELECT id, title, category, views FROM blog_articles ORDER BY views DESC LIMIT 10";
         List<HotArticlesDTO> hotArticles = jdbcTemplate.query(hotArticlesSql, (rs, rowNum) -> {
            HotArticlesDTO hotArticlesDTO = new HotArticlesDTO();
            hotArticlesDTO.setId(rs.getString("id"));

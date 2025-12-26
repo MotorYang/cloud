@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.motoryang.blog.article.entity.Article;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 /**
@@ -18,6 +19,9 @@ public interface ArticleDao extends BaseMapper<Article> {
      * @param id 文章ID
      * @return 受影响的行数
      */
-    @Update("UPDATE articles SET views = views + 1 WHERE id = #{id}")
+    @Update("UPDATE blog_articles SET views = views + 1 WHERE id = #{id}")
     int incrementViews(@Param("id") String id);
+
+    @Select("select count(id) from blog_articles where category = #{category}")
+    int countByCategory(@Param("category") String category);
 }
